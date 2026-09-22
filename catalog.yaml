@@ -1,6 +1,11 @@
 # Pristine release-owned Code model catalog, never copied from an operator's model registry.
 # Every entry was loaded and measured on VaultAI's owned Ollama 0.34.2 with the Code launch policy
-# (one runner, q8_0 KV cache, flash attention) at each launch context, 2026-09-21, on a 512 GB Mac.
+# (one runner, q8_0 KV cache, flash attention) at each launch context, on a 512 GB Mac.
+# v3 (2026-09-22): coding moved to the MLX build of Qwen3.8 27B (ruling 2026-09-21 evening;
+# 73-88 tok/s vs ~30 GGUF). Qwen3-Coder-30B-A3B dropped (ruling 2) and the VaultAI GGUF build of
+# the same model superseded. MLX runners allocate the KV cache lazily, so an MLX entry's
+# measurement prefills roughly a full context before reading /api/ps - an empty load would
+# report weights only. GGUF runners pre-allocate, so their readings need no prefill.
 # Rig and raw output: max-code-lab Documentation/validation/model-onboarding-2026-09-21/.
 # Residency is what /api/ps reported (size == size_vram); disk bytes were never used as runtime RAM.
 # Digests are engine manifest identities, checked the same day against the publishing registry.
@@ -25,33 +30,33 @@ launch_context_by_ram_class:
   "512": 131072
 candidates:
   - model:
-      id: code-qwen3-coder-30b
-      name: Qwen3 Coder 30B
-      engine_id: qwen3-coder:30b
-      ollama_tag: qwen3-coder:30b
-      hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
-      size_gb: 26.1
+      id: code-qwen3-8-27b-mlx
+      name: Qwen3.8 27B (MLX)
+      engine_id: qwen3.8:27b-mlx
+      ollama_tag: qwen3.8:27b-mlx
+      hf_repo: Qwen/Qwen3.8-27B
+      size_gb: 18.2
       ram_classes: [48, 64, 96, 128, 192, 256, 512]
       capabilities: [code]
       stable: true
-    download_bytes: 18556700761
+    download_bytes: 18174721596
     recommended_ram_classes: [48, 64, 96, 128, 192, 256, 512]
     source:
       publisher: Qwen (Alibaba Cloud), packaged by Ollama
       host: ollama
-      card_url: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct
+      card_url: https://ollama.com/library/qwen3.8
       license: Apache 2.0
-      license_url: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct/blob/main/LICENSE
-      summary: Purpose-built coding model. Fast for its size because only 3B parameters are active per token.
+      license_url: https://huggingface.co/Qwen/Qwen3.8-27B
+      summary: The fast one - the MLX build of Qwen3.8 27B, roughly two and a half times the speed of the GGUF builds.
     resource_evidence:
       status: verified
-      digest: 06c1097efce0431c2045fe7b2e5108366e43bee1b4603a7aded8f21689e90bca
+      digest: 5642e97495e1a088883805981563dcdc4a040c2f53388b7a41d1f24d3622cf7e
       num_parallel: 1
-      note: /api/show reports completion/tools. Registry manifest digest matched on 2026-09-21.
+      note: 'MLX build (nvfp4, trained context 262,144, tools). Residency includes the KV cache: the measurement prefills roughly a full context before reading /api/ps. Measured 2026-09-22 with the Code launch policy on the owned engine; benchmark evidence in max-code-lab validation/model-onboarding-2026-09-21/evidence/mlx-bench.'
       measurements:
-        - { context_tokens: 32768, resident_bytes: 20331909610 }
-        - { context_tokens: 65536, resident_bytes: 22422266838 }
-        - { context_tokens: 131072, resident_bytes: 26136448859 }
+        - { context_tokens: 32768, resident_bytes: 21532462812 }
+        - { context_tokens: 65536, resident_bytes: 24578166492 }
+        - { context_tokens: 131072, resident_bytes: 30643113692 }
   - model:
       id: code-local-model
       name: GPT-OSS 20B
@@ -135,30 +140,3 @@ candidates:
         - { context_tokens: 32768, resident_bytes: 21834760190 }
         - { context_tokens: 65536, resident_bytes: 22564936088 }
         - { context_tokens: 131072, resident_bytes: 23680883096 }
-  - model:
-      id: code-qwen38-27b
-      name: Qwen3.8 27B (VaultAI build)
-      engine_id: hf.co/vaultai/Qwen3.8-27B-GGUF:Q4_K_M
-      ollama_tag: hf.co/vaultai/Qwen3.8-27B-GGUF:Q4_K_M
-      hf_repo: vaultai/Qwen3.8-27B-GGUF
-      size_gb: 23.2
-      ram_classes: [48, 64, 96, 128, 192, 256, 512]
-      capabilities: [code]
-      stable: true
-    download_bytes: 18034383602
-    source:
-      publisher: Qwen (Alibaba Cloud), quantized and hosted by VaultAI
-      host: huggingface
-      card_url: https://huggingface.co/vaultai/Qwen3.8-27B-GGUF
-      license: Apache 2.0
-      license_url: https://huggingface.co/Qwen/Qwen3.8-27B
-      summary: VaultAI's own build of a strong general model. Slower than the 30B coder, careful on long tasks.
-    resource_evidence:
-      status: verified
-      digest: 6834f1387aaa30df7c0988dcafe6f60104a5cd86800da3c85601a63428b8782f
-      num_parallel: 1
-      note: /api/show reports tools/thinking/completion/vision. Hugging Face manifest digest matched on 2026-09-21.
-      measurements:
-        - { context_tokens: 32768, resident_bytes: 18767759276 }
-        - { context_tokens: 65536, resident_bytes: 20420682054 }
-        - { context_tokens: 131072, resident_bytes: 23239516486 }
