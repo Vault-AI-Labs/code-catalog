@@ -1,0 +1,164 @@
+# Pristine release-owned Code model catalog, never copied from an operator's model registry.
+# Every entry was loaded and measured on VaultAI's owned Ollama 0.34.2 with the Code launch policy
+# (one runner, q8_0 KV cache, flash attention) at each launch context, 2026-09-21, on a 512 GB Mac.
+# Rig and raw output: max-code-lab Documentation/validation/model-onboarding-2026-09-21/.
+# Residency is what /api/ps reported (size == size_vram); disk bytes were never used as runtime RAM.
+# Digests are engine manifest identities, checked the same day against the publishing registry.
+#
+# Hardware analysis. A model lists a RAM class only when, at that class's launch context,
+#   measured residency + OS reserve (RAM/8, 2–16 GiB) <= 70 % of the class
+# which a test recomputes from the numbers below. Classes are "from N GB up".
+updated: "2026-09-22"
+version: 2
+ram_classes: [16, 24, 32, 48, 64, 96, 128, 192, 256, 512]
+# The native app launches the engine with this context for the Mac's class (one table, both sides).
+launch_context_by_ram_class:
+  "16": 32768
+  "24": 32768
+  "32": 65536
+  "48": 65536
+  "64": 131072
+  "96": 131072
+  "128": 131072
+  "192": 131072
+  "256": 131072
+  "512": 131072
+candidates:
+  - model:
+      id: code-qwen3-coder-30b
+      name: Qwen3 Coder 30B
+      engine_id: qwen3-coder:30b
+      ollama_tag: qwen3-coder:30b
+      hf_repo: Qwen/Qwen3-Coder-30B-A3B-Instruct
+      size_gb: 26.1
+      ram_classes: [48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 18556700761
+    recommended_ram_classes: [48, 64, 96, 128, 192, 256, 512]
+    source:
+      publisher: Qwen (Alibaba Cloud), packaged by Ollama
+      host: ollama
+      card_url: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct
+      license: Apache 2.0
+      license_url: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct/blob/main/LICENSE
+      summary: Purpose-built coding model. Fast for its size because only 3B parameters are active per token.
+    resource_evidence:
+      status: verified
+      digest: 06c1097efce0431c2045fe7b2e5108366e43bee1b4603a7aded8f21689e90bca
+      num_parallel: 1
+      note: /api/show reports completion/tools. Registry manifest digest matched on 2026-09-21.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 20331909610 }
+        - { context_tokens: 65536, resident_bytes: 22422266838 }
+        - { context_tokens: 131072, resident_bytes: 26136448859 }
+  - model:
+      id: code-local-model
+      name: GPT-OSS 20B
+      engine_id: gpt-oss:20b
+      ollama_tag: gpt-oss:20b
+      hf_repo: openai/gpt-oss-20b
+      size_gb: 13.6
+      ram_classes: [24, 32, 48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 13793441244
+    recommended_ram_classes: [24, 32]
+    source:
+      publisher: OpenAI, packaged by Ollama
+      host: ollama
+      card_url: https://huggingface.co/openai/gpt-oss-20b
+      license: Apache 2.0
+      license_url: https://huggingface.co/openai/gpt-oss-20b/blob/6cee5e81ee83917806bbde320786a8fb61efebee/LICENSE
+      summary: A solid all-round coder that leaves room for your other apps.
+    resource_evidence:
+      status: verified
+      digest: 17052f91a42e97930aa6e28a6c6c06a983e6a58dbb00434885a0cf5313e376f7
+      num_parallel: 1
+      note: /api/show reports completion/tools/thinking. The 131072 figure equals the 2026-09-20 standalone acceptance reading. Upstream origin maps to this tag in OpenAI's own card (https://huggingface.co/openai/gpt-oss-20b#ollama); that is provenance, not a claim that Ollama GGUF bytes match HF weights.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 12889966508 }
+        - { context_tokens: 65536, resident_bytes: 13293573896 }
+        - { context_tokens: 131072, resident_bytes: 13583641475 }
+  - model:
+      id: code-ornith-9b
+      name: Ornith 1.0 9B
+      engine_id: hf.co/deepreinforce-ai/Ornith-1.0-9B-GGUF:Q4_K_M
+      ollama_tag: hf.co/deepreinforce-ai/Ornith-1.0-9B-GGUF:Q4_K_M
+      hf_repo: ornith-ai/Ornith-1.0-9B-GGUF
+      size_gb: 9.3
+      ram_classes: [16, 24, 32, 48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 5629109111
+    recommended_ram_classes: [16]
+    source:
+      publisher: Ornith AI
+      host: huggingface
+      card_url: https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF
+      license: MIT
+      license_url: https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF
+      summary: The small one. Runs on a 16 GB Mac and is the quickest download.
+    resource_evidence:
+      status: verified
+      digest: 0e5b9bbae3c65e96f2b7cb38e0ff9cd96085ee43b9340f037bbacd0dcfb6ef60
+      num_parallel: 1
+      note: /api/show reports tools/thinking/completion. Hugging Face manifest digest matched on 2026-09-21. The publisher renamed its organisation from deepreinforce-ai to ornith-ai; both names served this identity that day. The tag keeps the original name because it is the model's identity across VaultAI (Chat's model list and drives already hold it under that name); Hugging Face redirects it.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 6565123849 }
+        - { context_tokens: 65536, resident_bytes: 7576307629 }
+        - { context_tokens: 131072, resident_bytes: 9254291373 }
+  - model:
+      id: code-ornith-35b
+      name: Ornith 1.0 35B
+      engine_id: hf.co/deepreinforce-ai/Ornith-1.0-35B-GGUF:Q4_K_M
+      ollama_tag: hf.co/deepreinforce-ai/Ornith-1.0-35B-GGUF:Q4_K_M
+      hf_repo: ornith-ai/Ornith-1.0-35B-GGUF
+      size_gb: 23.7
+      ram_classes: [48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 21166758176
+    source:
+      publisher: Ornith AI
+      host: huggingface
+      card_url: https://huggingface.co/ornith-ai/Ornith-1.0-35B-GGUF
+      license: MIT
+      license_url: https://huggingface.co/ornith-ai/Ornith-1.0-35B-GGUF
+      summary: A larger alternative that thinks before it edits.
+    resource_evidence:
+      status: verified
+      digest: 7905f50a834f6a9e74d13216b8e86e84f65870132e8210ae2c8062e0205ced7d
+      num_parallel: 1
+      note: /api/show reports tools/thinking/completion. Hugging Face manifest digest matched on 2026-09-21.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 21834760190 }
+        - { context_tokens: 65536, resident_bytes: 22564936088 }
+        - { context_tokens: 131072, resident_bytes: 23680883096 }
+  - model:
+      id: code-qwen38-27b
+      name: Qwen3.8 27B (VaultAI build)
+      engine_id: hf.co/vaultai/Qwen3.8-27B-GGUF:Q4_K_M
+      ollama_tag: hf.co/vaultai/Qwen3.8-27B-GGUF:Q4_K_M
+      hf_repo: vaultai/Qwen3.8-27B-GGUF
+      size_gb: 23.2
+      ram_classes: [48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 18034383602
+    source:
+      publisher: Qwen (Alibaba Cloud), quantized and hosted by VaultAI
+      host: huggingface
+      card_url: https://huggingface.co/vaultai/Qwen3.8-27B-GGUF
+      license: Apache 2.0
+      license_url: https://huggingface.co/Qwen/Qwen3.8-27B
+      summary: VaultAI's own build of a strong general model. Slower than the 30B coder, careful on long tasks.
+    resource_evidence:
+      status: verified
+      digest: 6834f1387aaa30df7c0988dcafe6f60104a5cd86800da3c85601a63428b8782f
+      num_parallel: 1
+      note: /api/show reports tools/thinking/completion/vision. Hugging Face manifest digest matched on 2026-09-21.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 18767759276 }
+        - { context_tokens: 65536, resident_bytes: 20420682054 }
+        - { context_tokens: 131072, resident_bytes: 23239516486 }
