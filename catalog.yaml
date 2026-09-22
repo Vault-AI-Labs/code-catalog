@@ -140,3 +140,30 @@ candidates:
         - { context_tokens: 32768, resident_bytes: 21834760190 }
         - { context_tokens: 65536, resident_bytes: 22564936088 }
         - { context_tokens: 131072, resident_bytes: 23680883096 }
+  - model:
+      id: code-vaultai-qwen35-9b-uncensored
+      name: Qwen3.5 9B Uncensored (VaultAI build)
+      engine_id: hf.co/vaultai/Qwen3.5-9B-Claude-4.6-Opus-Uncensored-Distilled-GGUF:Q4_K_M
+      ollama_tag: hf.co/vaultai/Qwen3.5-9B-Claude-4.6-Opus-Uncensored-Distilled-GGUF:Q4_K_M
+      hf_repo: vaultai/Qwen3.5-9B-Claude-4.6-Opus-Uncensored-Distilled-GGUF
+      size_gb: 6.5
+      ram_classes: [16, 24, 32, 48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 6548747450
+    source:
+      publisher: VaultAI (distilled from Qwen3.5 9B)
+      host: huggingface
+      card_url: https://huggingface.co/vaultai/Qwen3.5-9B-Claude-4.6-Opus-Uncensored-Distilled-GGUF
+      license: Apache 2.0
+      license_url: https://huggingface.co/vaultai/Qwen3.5-9B-Claude-4.6-Opus-Uncensored-Distilled-GGUF
+      summary: An uncensored coder for every Mac from 16 GB up - ours, abliterated and republished by VaultAI.
+    resource_evidence:
+      status: verified
+      digest: c7d828cec55d8ec8b326281435e4a5e4bf003f2105c716e7463c37a37c2b2b30
+      num_parallel: 1
+      note: 'Owner ruling 2026-09-22 item 4 (VaultAI abliterated models in the catalog). Q4_K_M + BF16 projector, trained context 262,144, tools. Measured 2026-09-22 with the Code launch policy on the owned sealed engine (weights pulled from the publishing repo; digest equals the Hugging Face /v2 manifest sha256). Residency KV-inclusive.'
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 6823209860 }
+        - { context_tokens: 65536, resident_bytes: 7834393640 }
+        - { context_tokens: 131072, resident_bytes: 9512377384 }
