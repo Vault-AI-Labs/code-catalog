@@ -10,6 +10,12 @@
 # Residency is what /api/ps reported (size == size_vram); disk bytes were never used as runtime RAM.
 # Digests are engine manifest identities, checked the same day against the publishing registry.
 #
+# v6 (2026-09-23): the full tier ladder from the 2026-09-21 lineup (owner ruling "at least this") —
+# Devstral Small 24B (24 GB tier pick), Qwen3.6 35B-A3B (fits 32 GB measured — the PDF's 32–64 pick),
+# Qwen3.6 27B MLX (48 GB alternative; contexts capped at 64K — its 128K prefill exceeds five minutes
+# before the first token, a bad customer experience), Qwen3 Coder Next 80B (96 GB+ pick) and GPT-OSS
+# 120B (96 GB+ alternative). Recommendations: 16 ornith-9b · 24 devstral · 32 qwen3.6-35b ·
+# 48/64 qwen3.8-mlx (narrowed) · 96+ qwen3-coder-next. gpt-oss:20b returns to a plain alternative.
 # Hardware analysis. A model lists a RAM class only when, at that class's launch context,
 #   measured residency + OS reserve (RAM/8, 2–16 GiB) <= 80 % of the class (owner ruling 2026-09-23; was 70 %)
 # which a test recomputes from the numbers below. Classes are "from N GB up".
@@ -40,7 +46,7 @@ candidates:
       capabilities: [code]
       stable: true
     download_bytes: 18174721596
-    recommended_ram_classes: [48, 64, 96, 128, 192, 256, 512]
+    recommended_ram_classes: [48, 64]
     source:
       publisher: Qwen (Alibaba Cloud), packaged by Ollama
       host: ollama
@@ -68,7 +74,6 @@ candidates:
       capabilities: [code]
       stable: true
     download_bytes: 13793441244
-    recommended_ram_classes: [24, 32]
     source:
       publisher: OpenAI, packaged by Ollama
       host: ollama
@@ -167,3 +172,136 @@ candidates:
         - { context_tokens: 32768, resident_bytes: 6823209860 }
         - { context_tokens: 65536, resident_bytes: 7834393640 }
         - { context_tokens: 131072, resident_bytes: 9512377384 }
+
+  # ---- v6 additions (2026-09-23, measured on the owned engine; see rig notes in the header) ----
+  - model:
+      id: code-devstral
+      name: Devstral Small 24B
+      engine_id: devstral:24b
+      ollama_tag: devstral:24b
+      size_gb: 13.3
+      ram_classes: [24, 32, 48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 14333927558
+    recommended_ram_classes: [24]
+    source:
+      publisher: devstral (Ollama library)
+      host: ollama
+      card_url: https://ollama.com/library/devstral
+      license: Apache-2.0 (declared on the Ollama page and Mistral's card)
+      summary: Mistral's coding-specialised 24B; SWE-bench Verified 68.0 — the 24–32 GB tier pick from the 2026-09-21 lineup.
+    resource_evidence:
+      status: verified
+      digest: 9bd74193e93935e9d8564d88607b220a9d341c4a36b748cffcbd9ad4f47a9ca9
+      num_parallel: 1
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 17329249320 }
+        - { context_tokens: 65536, resident_bytes: 20844097044 }
+        - { context_tokens: 131072, resident_bytes: 26816785940 }
+
+  - model:
+      id: code-qwen3-6-35b
+      name: Qwen3.6 35B
+      engine_id: qwen3.6:35b-a3b
+      ollama_tag: qwen3.6:35b-a3b
+      size_gb: 21.1
+      ram_classes: [32, 48, 64, 96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 22621314161
+    recommended_ram_classes: [32]
+    source:
+      publisher: qwen3.6 (Ollama library)
+      host: ollama
+      card_url: https://ollama.com/library/qwen3.6
+      license: Apache-2.0 (card tag on huggingface.co/Qwen/Qwen3.6-35B-A3B)
+      summary: Fast A3B sparse MoE coder; SWE-bench Verified 73.4 — measured to fit 32 GB (the lineup PDF allowed 48), taking the 32 GB recommendation.
+    resource_evidence:
+      status: verified
+      digest: 096fdbd02fe620fc10cbeb6537e080f8041aece851e5d696aed024d4f70f2e47
+      num_parallel: 1
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 22471046592 }
+        - { context_tokens: 65536, resident_bytes: 22895038298 }
+        - { context_tokens: 131072, resident_bytes: 23432171354 }
+
+  - model:
+      id: code-qwen3-6-27b-mlx
+      name: Qwen3.6 27B (MLX)
+      engine_id: qwen3.6:27b-mlx
+      ollama_tag: qwen3.6:27b-mlx
+      size_gb: 17.5
+      ram_classes: [48]
+      capabilities: [code]
+      stable: true
+    download_bytes: 18785065845
+    source:
+      publisher: qwen3.6 (Ollama library)
+      host: ollama
+      card_url: https://ollama.com/library/qwen3.6
+      license: Apache-2.0 (card tag on huggingface.co/Qwen/Qwen3.6-27B)
+      summary: Higher-quality dense alternative at 48 GB (SWE-bench Verified 77.2, slower than the A3B). Contexts stop at 64K on purpose — the 128K prefill measured past five minutes before the first token.
+    resource_evidence:
+      status: verified
+      digest: d49fd9e0da45e486918c87318b866e5924e37ad5841db58763900297d9616ee7
+      num_parallel: 1
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity. Only the 32K and 64K launch contexts are claimed; the 128K load was not admitted.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 22142795452 }
+        - { context_tokens: 65536, resident_bytes: 25188499132 }
+
+  - model:
+      id: code-qwen3-coder-next
+      name: Qwen3 Coder Next 80B
+      engine_id: qwen3-coder-next:latest
+      ollama_tag: qwen3-coder-next:latest
+      size_gb: 48.2
+      ram_classes: [96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 51741611333
+    recommended_ram_classes: [96, 128, 192, 256, 512]
+    source:
+      publisher: qwen3-coder-next (Ollama library)
+      host: ollama
+      card_url: https://ollama.com/library/qwen3-coder-next
+      license: Apache-2.0 (card tag on huggingface.co/Qwen/Qwen3-Coder-Next)
+      summary: The 96 GB+ tier pick from the lineup; SWE-bench Verified 70.6.
+    resource_evidence:
+      status: verified
+      digest: ca06e9e4087c714d44355bf954099187890e63084b4a632b8e9956c4b9492074
+      num_parallel: 1
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 52334029699 }
+        - { context_tokens: 65536, resident_bytes: 53145973553 }
+        - { context_tokens: 131072, resident_bytes: 54404526897 }
+
+  - model:
+      id: code-gpt-oss-120b
+      name: GPT-OSS 120B
+      engine_id: gpt-oss:120b
+      ollama_tag: gpt-oss:120b
+      size_gb: 60.9
+      ram_classes: [96, 128, 192, 256, 512]
+      capabilities: [code]
+      stable: true
+    download_bytes: 65369818451
+    source:
+      publisher: gpt-oss (Ollama library)
+      host: ollama
+      card_url: https://ollama.com/library/gpt-oss
+      license: Apache-2.0 (declared on the Ollama page and OpenAI's card)
+      summary: The 96 GB+ alternative from the lineup; SWE-bench Verified 62.4.
+    resource_evidence:
+      status: verified
+      digest: a951a23b46a1f6093dafee2ea481d634b4e31ac720a8a16f3f91e04f5a40ecd9
+      num_parallel: 1
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity.
+      measurements:
+        - { context_tokens: 32768, resident_bytes: 64475082259 }
+        - { context_tokens: 65536, resident_bytes: 64885757049 }
+        - { context_tokens: 131072, resident_bytes: 65175038196 }
