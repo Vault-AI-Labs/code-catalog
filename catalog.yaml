@@ -11,9 +11,9 @@
 # Digests are engine manifest identities, checked the same day against the publishing registry.
 #
 # Hardware analysis. A model lists a RAM class only when, at that class's launch context,
-#   measured residency + OS reserve (RAM/8, 2–16 GiB) <= 70 % of the class
+#   measured residency + OS reserve (RAM/8, 2–16 GiB) <= 80 % of the class (owner ruling 2026-09-23; was 70 %)
 # which a test recomputes from the numbers below. Classes are "from N GB up".
-updated: "2026-09-22"
+updated: "2026-09-23"
 version: 2
 ram_classes: [16, 24, 32, 48, 64, 96, 128, 192, 256, 512]
 # The native app launches the engine with this context for the Mac's class (one table, both sides).
@@ -120,7 +120,7 @@ candidates:
       ollama_tag: hf.co/deepreinforce-ai/Ornith-1.0-35B-GGUF:Q4_K_M
       hf_repo: ornith-ai/Ornith-1.0-35B-GGUF
       size_gb: 23.7
-      ram_classes: [48, 64, 96, 128, 192, 256, 512]
+      ram_classes: [32, 48, 64, 96, 128, 192, 256, 512] # 32 GB admitted by the 80 % ruling (21.0 GiB at 65,536 + 4 GiB reserve <= 25.6)
       capabilities: [code]
       stable: true
     download_bytes: 21166758176
