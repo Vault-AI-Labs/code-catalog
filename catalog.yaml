@@ -20,7 +20,7 @@
 # Hardware analysis. A model lists a RAM class only when, at that class's launch context,
 #   measured residency + OS reserve (RAM/8, 2–16 GiB) <= 80 % of the class (owner ruling 2026-09-23; was 70 %)
 # which a test recomputes from the numbers below. Classes are "from N GB up".
-updated: "2026-09-23"
+updated: "2026-10-05"
 version: 2
 ram_classes: [16, 24, 32, 48, 64, 96, 128, 192, 256, 512]
 # The native app launches the engine with this context for the Mac's class (one table, both sides).
@@ -180,6 +180,7 @@ candidates:
       name: Devstral Small 24B
       engine_id: devstral:24b
       ollama_tag: devstral:24b
+      hf_repo: ollama.com/library/devstral
       size_gb: 13.3
       ram_classes: [24, 32, 48, 64, 96, 128, 192, 256, 512]
       capabilities: [code]
@@ -208,6 +209,7 @@ candidates:
       name: Qwen3.6 35B
       engine_id: qwen3.6:35b-a3b
       ollama_tag: qwen3.6:35b-a3b
+      hf_repo: Qwen/Qwen3.6-35B-A3B
       size_gb: 21.1
       ram_classes: [32, 48, 64, 96, 128, 192, 256, 512]
       capabilities: [code]
@@ -223,9 +225,9 @@ candidates:
       summary: Fast A3B sparse MoE coder; SWE-bench Verified 73.4 — measured to fit 32 GB (the lineup PDF allowed 48), taking the 32 GB recommendation.
     resource_evidence:
       status: verified
-      digest: 096fdbd02fe620fc10cbeb6537e080f8041aece851e5d696aed024d4f70f2e47
+      digest: a7eb95c53bcf96b4bdd008d0fab4a5dac88047d9c1a7a9ab88ed453423fbd87c
       num_parallel: 1
-      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity.
+      note: Measured with the Code launch policy (one runner, q8_0 KV cache, flash attention). Digest is the engine manifest identity. Re-pinned 2026-10-01 — the publisher re-issued the tag (was 096fdbd0…); re-measured on the owned engine, residency byte-identical at all three contexts.
       measurements:
         - { context_tokens: 32768, resident_bytes: 22471046592 }
         - { context_tokens: 65536, resident_bytes: 22895038298 }
@@ -236,6 +238,7 @@ candidates:
       name: Qwen3 Coder Next 80B
       engine_id: qwen3-coder-next:latest
       ollama_tag: qwen3-coder-next:latest
+      hf_repo: Qwen/Qwen3-Coder-Next
       size_gb: 48.2
       ram_classes: [96, 128, 192, 256, 512]
       capabilities: [code]
@@ -264,6 +267,7 @@ candidates:
       name: GPT-OSS 120B
       engine_id: gpt-oss:120b
       ollama_tag: gpt-oss:120b
+      hf_repo: openai/gpt-oss-120b
       size_gb: 60.9
       ram_classes: [96, 128, 192, 256, 512]
       capabilities: [code]
