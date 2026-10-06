@@ -59,11 +59,11 @@ candidates:
       status: verified
       digest: 5642e97495e1a088883805981563dcdc4a040c2f53388b7a41d1f24d3622cf7e
       num_parallel: 1
-      note: 'MLX build (nvfp4, trained context 262,144, tools). Residency includes the KV cache: the measurement prefills roughly a full context before reading /api/ps. Measured 2026-09-22 with the Code launch policy on the owned engine; benchmark evidence in max-code-lab validation/model-onboarding-2026-09-21/evidence/mlx-bench.'
+      note: 'MLX build (nvfp4, trained context 262,144, tools). Residency is the largest /api/ps reading across a growing agent-style /api/chat conversation run to at least 85 % of the context (vaultai-code measure --conversation; the MLX runner grows across prefix-sharing requests, so one prefill under-reported it by 3-5 GiB and real runs were refused). Re-measured 2026-10-05; first measured 2026-09-22 with the Code launch policy on the owned engine; benchmark evidence in max-code-lab validation/model-onboarding-2026-09-21/evidence/mlx-bench.'
       measurements:
-        - { context_tokens: 32768, resident_bytes: 21532462812 }
-        - { context_tokens: 65536, resident_bytes: 24578166492 }
-        - { context_tokens: 131072, resident_bytes: 30643113692 }
+        - { context_tokens: 32768, resident_bytes: 24367724268 }
+        - { context_tokens: 65536, resident_bytes: 29515140844 }
+        - { context_tokens: 131072, resident_bytes: 35169849068 }
   - model:
       id: code-local-model
       name: GPT-OSS 20B
